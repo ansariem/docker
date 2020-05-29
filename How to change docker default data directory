@@ -1,0 +1,37 @@
+You might have experience No Space !, when you pulling images. /var/lib/docker is the default directory which holds the
+docker images and container data. When more and more containers are created, the system may soon run out of space. 
+So you may need to change the directory to another place, say /home/ansari/docker.
+
+Open file /lib/systemd/system/docker.service with your favorite text editor and replace the following line 
+where /home/ansari/docker is a location of your new chosen docker directory:
+
+ 1.Find the default path from below command.
+ $ docker info
+ $ docker info | grep "Root Dir"
+
+So it is /var/lib/docker.
+Update the new path /home/ansari/var. For this you need to edit docker.service file.
+Let's locate the file
+$ systemctl status docker.service
+
+[vagrant@node-1 ~]$ systemctl status docker.service | grep Loaded
+   Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
+
+Open the file.
+$ vi /usr/lib/systemd/system/docker.service
+Edit ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock
+
+#update like below | I change this to /home/ansari/docker. It will look like this
+
+ExecStart=/usr/bin/dockerd -g /home/ansari/docker -H fd:// --containerd=/run/containerd/containerd.sock
+
+Save and restart the docker service
+$ service docker restart
+$ docker info
+
+$ docker info | grep Root
+
+#Validate the change
+ $ docker info
+[vagrant@node-1 ~]$ docker info | grep "Root Dir"
+ Docker Root Dir: /home/ansari/docker
