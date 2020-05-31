@@ -1,0 +1,44 @@
+What Is A REST API
+Let’s say you’re trying to find videos about Batman on Youtube. You open up Youtube, type “Batman” into a search field, hit enter, and you see a list of videos about Batman. A REST API works in a similar way. You search for something, and you get a list of results back from the service you’re requesting from.
+
+How to setup RESR API in Docker :-
+Here I am explainig the beasic API test with Docker. 
+Edit the configuration files and update the REST API and update below line into it
+
+ $ sudo vi  /lib/systemd/system/docker.service
+ ExecStart=/usr/bin/dockerd -H fd:// -H=tcp://0.0.0.0:5555
+
+Then reload the services
+ $ sudo systemctl daemon-reload
+ $ sudo service docker restart
+
+ Test:
+ RUN API to:
+ - see images
+ - see running containers
+- start and stop containers
+
+Create container on Docker Host:
+
+$ docker run -itd --name=nginx nginx
+$ docker run -itd --name=redis redis
+$ docker ps
+
+Validate the API (List the images and Containers) from other Node.
+
+ $ curl --data http://<docker host IP/Name>:<REST API PORT NO>/images/json
+
+Eg:  $ curl http://192.168.205.42:5555/images/json
+ 	$ curl http://192.168.205.42:5555/containers/json
+
+ Stop the containers
+
+ curl --data "t=5" http://<docker host IP/Name>:<REST API PORT NO>/containers/<Container name>/stop
+ Eg:
+ 	curl --data "t=5" http://192.168.205.42:5555/containers/17b2a09ff163/stop
+ 	curl --data "t=5" http://192.168.205.42:5555/containers/nginx/stop
+
+Start the containers:
+
+curl --data "t=5" http://<docker host IP/Name>:<REST API PORT NO>/containers/<Container name>/sart
+curl --data "t=5" http://192.168.205.42:5555/containers/nginx/start
